@@ -19,7 +19,7 @@ description: 在 Codex 中用原生子代理分派和验收多步骤任务。适
 
 ## 实际派工
 
-本 Skill 明确要求对适合独立执行的工作使用子代理。首次调用前读取 [宿主能力、并发与模型预算](references/runtime-policy.md)。Router 统一派发及预留，全树默认最多两个 Worker。按实际宿主能力选择 `routine`、`complex` 或 `analyst`，默认高级研判预算为零。宿主不可用或无法满足预算时由 Router 串行执行并记录原因。Worker ID 取自真实调用结果或宿主核查证据。
+本 Skill 明确要求对适合独立执行的工作使用子代理。首次调用前读取 [宿主能力、并发与模型预算](references/runtime-policy.md)。Router 统一派发及预留，不设固定 Worker 数量上限，按独立任务、依赖及宿主可用容量安排并发，遵守用户明确设定的限制。按实际宿主能力选择 `routine`、`complex` 或 `analyst`，默认高级研判预算为零。宿主不可用或无法满足预算时由 Router 串行执行并记录原因。Worker ID 取自真实调用结果或宿主核查证据。
 
 派工包含任务 ID、`assignment_revision`、当前需求版本、适用的上下文版本、原始要求、对应验收项、必要输入、依赖、实际工作目录、可写范围、交付物和验证要求。要求 Worker 发现超出对象、授权或可写范围时停止扩写并交回 Router。Worker 自行调查和选择局部实现方式。多个 Worker 写入时分配不重叠的文件或独立 worktree。共享状态与合并由 Router 协调。
 

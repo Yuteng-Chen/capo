@@ -1,5 +1,7 @@
 # Capo 🎩 — Your agent coordinator, inside Codex, from goal to delivery
 
+[简体中文](README.md) | [English](README.en.md)
+
 ![Capo：派工、监督与验收](assets/capo-banner.png)
 
 <p align="center">
@@ -50,13 +52,13 @@
 
 ```mermaid
 flowchart TD
-    U[你：目标、变更、暂停或恢复] --> R[Capo Router：记录要求与分配边界]
-    R --> I[实现 Worker]
-    R --> V[独立验证 Worker]
-    I --> A[Router：检查当前版本产物与证据]
+    U[You: goals, changes, pause or resume] --> R[Capo Router: requirements and task boundaries]
+    R --> I[Implementation Worker]
+    R --> V[Independent Verification Worker]
+    I --> A[Router: verify current artifacts and evidence]
     V --> A
-    A -->|必要项全部通过| D[交付结果与验证记录]
-    A -->|未通过或证据不足| R
+    A -->|All required checks pass| D[Deliver results and verification records]
+    A -->|Checks fail or evidence is missing| R
 ```
 
 默认最多两个 Worker；高级研判预算为零。实际能力不满足时，会记录限制并选择允许的执行方式。共享上下文、分派版本、暂停与写域交接的细则见 [协调协议](skills/capo/references/coordination-protocol.md)。

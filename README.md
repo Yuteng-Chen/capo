@@ -1,14 +1,18 @@
 ![Capo：派工、监督与验收](assets/capo-banner.png)
 
-[![CI](https://github.com/Yuteng-Chen/capo/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/Yuteng-Chen/capo/actions/workflows/check.yml)
-[![License: MIT](https://img.shields.io/github/license/Yuteng-Chen/capo)](LICENSE)
-[![Version: 0.1.0](https://img.shields.io/badge/version-0.1.0-blue)](VERSION)
-[![Codex Skill](https://img.shields.io/badge/Codex-Skill-10a37f)](skills/capo/SKILL.md)
+<p align="center">
+  <a href="https://github.com/Yuteng-Chen/capo/actions/workflows/check.yml"><img alt="CI" src="https://github.com/Yuteng-Chen/capo/actions/workflows/check.yml/badge.svg?branch=main"></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/Yuteng-Chen/capo"></a>
+  <a href="VERSION"><img alt="Version: 0.1.0" src="https://img.shields.io/badge/version-0.1.0-blue"></a>
+  <a href="skills/capo/SKILL.md"><img alt="Codex Skill" src="https://img.shields.io/badge/Codex-Skill-10a37f"></a>
+</p>
 
-[![GitHub Stars](https://img.shields.io/github/stars/Yuteng-Chen/capo?style=flat&logo=github)](https://github.com/Yuteng-Chen/capo/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/Yuteng-Chen/capo?style=flat&logo=github)](https://github.com/Yuteng-Chen/capo/forks)
-[![Open Issues](https://img.shields.io/github/issues/Yuteng-Chen/capo?logo=github)](https://github.com/Yuteng-Chen/capo/issues)
-[![Last Commit](https://img.shields.io/github/last-commit/Yuteng-Chen/capo/main?logo=github)](https://github.com/Yuteng-Chen/capo/commits/main/)
+<p align="center">
+  <a href="https://github.com/Yuteng-Chen/capo/stargazers"><img alt="GitHub Stars" src="https://img.shields.io/github/stars/Yuteng-Chen/capo?style=flat&amp;logo=github"></a>
+  <a href="https://github.com/Yuteng-Chen/capo/forks"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/Yuteng-Chen/capo?style=flat&amp;logo=github"></a>
+  <a href="https://github.com/Yuteng-Chen/capo/issues"><img alt="Open Issues" src="https://img.shields.io/github/issues/Yuteng-Chen/capo?logo=github"></a>
+  <a href="https://github.com/Yuteng-Chen/capo/commits/main/"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Yuteng-Chen/capo/main?logo=github"></a>
+</p>
 
 # Capo
 

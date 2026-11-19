@@ -1,3 +1,5 @@
+![Capo：派工、监督与验收](assets/capo-banner.png)
+
 # Capo
 
 一个让 Codex 主会话组织 Worker、接收需求变化并按证据验收的 Skill。当前版本 **0.1.0，预览版**。项目名称为 Capo，调用方式为 `$capo`。
@@ -39,6 +41,65 @@ fi
 ```
 
 之后可以继续说“先暂停实现任务，验证任务继续”或“保留总数，新增按优先级汇总”。暂停在途写入是否已生效，必须看实际工具证据。
+
+### 一个完整例子：工单汇总工具
+
+下面是可复制的交互示例，用来说明工作流程；不是本次实际运行日志。
+
+**① 把目标交给 Capo**
+
+```text
+使用 $capo，在当前项目做一个工单汇总 CLI。
+输入 tickets.json，输出 JSON：total 和 byStatus。
+byStatus 固定包含 open、closed、in_progress，零值也要输出。
+最多两个 Worker，高级研判预算为零。
+一个 Worker 实现 CLI，另一个独立准备样例、预期结果和验证脚本。
+先确认工具可用，记录真实派工，不要只给我计划。
+```
+
+例如，输入是：
+
+```json
+[
+  {"id":"T-1","status":"open","priority":"high"},
+  {"id":"T-2","status":"closed","priority":"low"},
+  {"id":"T-3","status":"open","priority":"high"}
+]
+```
+
+V1 预期输出：
+
+```json
+{"total":3,"byStatus":{"open":2,"closed":1,"in_progress":0}}
+```
+
+**② 执行中追加需求**
+
+```text
+保留已有输出，再增加 byPriority：high、normal、low，零值也输出。
+请更新验收条件，把变化交给原实现和验证 Worker，并检查旧版输出不能通过新验收。
+```
+
+Capo 应保留 V1，记录 V2，把变化同步给受影响的原 Worker；实现者和验证者分别处理自己的文件。
+
+**③ 看最终验收，而不只是“Worker 已完成”**
+
+V2 预期输出：
+
+```json
+{"total":3,"byStatus":{"open":2,"closed":1,"in_progress":0},"byPriority":{"high":2,"normal":0,"low":1}}
+```
+
+交付时应能看到真实 Worker 标识、实际验证命令和结果，以及以下验收结论：
+
+| 检查 | 预期 |
+| --- | --- |
+| 上面的混合工单 | 与 V2 预期输出一致 |
+| 空数组 | total 为 0，所有分类键都存在且为 0 |
+| 汇总守恒 | 每个分类维度的数量之和都等于 total |
+| 用 V2 标准检查旧版输出 | 因缺少 byPriority 而拒绝 |
+
+如需临时暂停，可以说：“暂停 CLI 实现任务，验证 Worker 继续准备独立样例；需要执行 CLI 的验证先等待。”恢复时说：“恢复 CLI 实现任务，按最新 V2 继续。”Capo 应核查实际停止状态、剩余暂停和最新需求后再续作。实际派工数量取决于宿主能力与预算，无法满足时会说明降级方式。
 
 可在 CLI 中用 `codex features list` 检查当前版本的能力，也要核对会话实际暴露的工具。无需为了安装本 Skill 盲目写入配置键。`/goal` 仅在宿主支持且用户要求持久目标时使用，本项目不安装自定义 `/goal` 命令。
 

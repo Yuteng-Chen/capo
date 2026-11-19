@@ -39,7 +39,7 @@ When implementation, testing, and requirement changes overlap, you need to know 
 
 ## Capabilities
 
-- Delegate through the host's actual native subagent tools, with a default limit of two concurrent Workers across the entire agent tree.
+- Delegate through the host's actual native subagent tools, choosing concurrency from independent tasks and available host capacity without a fixed Worker cap imposed by Capo.
 - Route routine work, complex work, and advanced analysis to suitable models, recording what the current entrypoint actually supports.
 - Track requirement, assignment, context, and acceptance versions. Distinguish message acknowledgement, artifact submission, and acceptance.
 - Pause A while B continues. Before replacing a Worker, verify that its write domain has been released or isolate the replacement's work.
@@ -61,7 +61,7 @@ flowchart TD
     A -->|Checks fail or evidence is missing| R
 ```
 
-The default limit is two concurrent Workers, with zero advanced-analysis calls allowed. If the host cannot meet these requirements, Capo records the limitation and chooses a permitted execution path. See the [coordination protocol](skills/capo/references/coordination-protocol.md) for shared context, assignment versions, scoped pauses, and write-domain handoff rules.
+Capo sets no fixed Worker cap. The Router chooses concurrency based on independent tasks, dependencies, write boundaries, and available host capacity, while respecting any explicit user limit. Unknown capacity is checked before adding Workers. The default advanced-analysis budget remains zero. If the host cannot meet these requirements, Capo records the limitation and chooses a permitted execution path. See the [coordination protocol](skills/capo/references/coordination-protocol.md) for shared context, assignment versions, scoped pauses, and write-domain handoff rules.
 
 ## Install and use
 
@@ -91,7 +91,7 @@ This copies the skill directory. If your host uses another skill location, use t
 ```text
 Use $capo. First confirm the available subagent tools and models.
 Build a small ticket-summary tool in the current project: read a JSON array and output the total and counts by status.
-Use different Workers for implementation and verification, with at most two Workers and an advanced-analysis budget of zero.
+Use different Workers for implementation and verification. Choose concurrency based on independent tasks and available host capacity; keep the advanced-analysis budget at zero.
 Keep assignment and acceptance evidence.
 ```
 
@@ -107,7 +107,7 @@ This is a copyable interaction example that illustrates the workflow. It is not 
 Use $capo to build a ticket-summary CLI in the current project.
 Read tickets.json and output JSON containing total and byStatus.
 byStatus must always include open, closed, and in_progress, including zero counts.
-Use at most two Workers and an advanced-analysis budget of zero.
+Choose concurrency based on independent tasks and available host capacity; keep the advanced-analysis budget at zero.
 Assign implementation to one Worker and independent fixtures, expected results, and a verification script to another.
 Confirm tool availability first and record actual assignments. Do not stop at a plan.
 ```

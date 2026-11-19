@@ -1,0 +1,6 @@
+interface:
+  display_name: "Capo"
+  short_description: "协调 Codex 子代理派工、同步需求变更，并依据实际证据完成验收交付"
+  default_prompt: "使用 $capo 完成这个目标，派发独立任务、跟进变更，并逐项验证交付结果。"
+policy:
+  allow_implicit_invocation: true

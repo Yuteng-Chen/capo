@@ -1,5 +1,15 @@
 ![Capo：派工、监督与验收](assets/capo-banner.png)
 
+[![CI](https://github.com/Yuteng-Chen/capo/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/Yuteng-Chen/capo/actions/workflows/check.yml)
+[![License: MIT](https://img.shields.io/github/license/Yuteng-Chen/capo)](LICENSE)
+[![Version: 0.1.0](https://img.shields.io/badge/version-0.1.0-blue)](VERSION)
+[![Codex Skill](https://img.shields.io/badge/Codex-Skill-10a37f)](skills/capo/SKILL.md)
+
+[![GitHub Stars](https://img.shields.io/github/stars/Yuteng-Chen/capo?style=flat&logo=github)](https://github.com/Yuteng-Chen/capo/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/Yuteng-Chen/capo?style=flat&logo=github)](https://github.com/Yuteng-Chen/capo/forks)
+[![Open Issues](https://img.shields.io/github/issues/Yuteng-Chen/capo?logo=github)](https://github.com/Yuteng-Chen/capo/issues)
+[![Last Commit](https://img.shields.io/github/last-commit/Yuteng-Chen/capo/main?logo=github)](https://github.com/Yuteng-Chen/capo/commits/main/)
+
 # Capo
 
 一个让 Codex 主会话组织 Worker、接收需求变化并按证据验收的 Skill。当前版本 **0.1.0，预览版**。项目名称为 Capo，调用方式为 `$capo`。

@@ -1,3 +1,5 @@
+# Capo 🎩 — Your agent coordinator, inside Codex, from goal to delivery
+
 ![Capo：派工、监督与验收](assets/capo-banner.png)
 
 <p align="center">
@@ -14,11 +16,24 @@
   <a href="https://github.com/Yuteng-Chen/capo/commits/main/"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Yuteng-Chen/capo/main?logo=github"></a>
 </p>
 
-# Capo
+**你定目标，Capo 协调派工、跟进变更、按证据验收。**
 
 一个让 Codex 主会话组织 Worker、接收需求变化并按证据验收的 Skill。当前版本 **0.1.0，预览版**。项目名称为 Capo，调用方式为 `$capo`。
 
 适合可以拆成独立工作的多步骤任务。例如，让一个 Worker 实现工具，另一个准备独立样例；需求变化后续投原任务；最后对照新要求验证产物。简单线性任务可以直接由主会话完成。
+
+[安装使用](#安装与使用) · [工作流程](#工作流程) · [模型与预算](#模型与预算) · [验证材料](#示例与验证) · [常见问题](#常见问题) · [反馈与贡献](#反馈与贡献)
+
+## 为什么用 Capo
+
+当实现、测试和需求变更同时发生时，关键是持续确认“谁负责哪部分、现在按哪版要求做、什么证据能说明完成”。Capo 把这些协调信息留在同一条任务链上：
+
+| 你遇到的情况 | Capo 的处理方式 |
+| --- | --- |
+| 实现和验证可以独立推进 | 分给不同 Worker，明确文件边界和验收项 |
+| 执行到一半改需求 | 保留旧版，更新受影响任务与验收标准 |
+| 只想暂停其中一项工作 | 冻结对应范围，无关任务继续 |
+| Worker 说“做好了” | 核对当前产物并验证，缺证据的项目保留为未验证 |
 
 ## 能做什么
 
@@ -29,11 +44,35 @@
 
 这是由 Agent 执行的调度规则。实际进程停止、文件访问权限和沙箱由宿主提供；Skill 本身不提供锁、强制停止、可靠后台服务或费用硬限额。不能把不同 worktree 当作权限隔离。
 
+## 工作流程
+
+主会话负责 Router，Worker 负责被分配的实现或验证。你可以继续在主会话询问进度、修改要求或指定暂停范围。
+
+```mermaid
+flowchart TD
+    U[你：目标、变更、暂停或恢复] --> R[Capo Router：记录要求与分配边界]
+    R --> I[实现 Worker]
+    R --> V[独立验证 Worker]
+    I --> A[Router：检查当前版本产物与证据]
+    V --> A
+    A -->|必要项全部通过| D[交付结果与验证记录]
+    A -->|未通过或证据不足| R
+```
+
+默认最多两个 Worker；高级研判预算为零。实际能力不满足时，会记录限制并选择允许的执行方式。共享上下文、分派版本、暂停与写域交接的细则见 [协调协议](skills/capo/references/coordination-protocol.md)。
+
 ## 安装与使用
 
 需要能加载本地 `SKILL.md` 的 Codex 环境。多代理功能取决于当前宿主、账户和工具权限。运行 Skill 无需本项目的 Python/Node 开发依赖。
 
-从下载解压后的项目根目录，在 macOS/Linux 的 shell 中执行：
+先克隆项目，也可以下载 ZIP 后解压：
+
+```sh
+git clone https://github.com/Yuteng-Chen/capo.git
+cd capo
+```
+
+从项目根目录，在 macOS/Linux 的 shell 中执行：
 
 ```sh
 skill_parent="${CODEX_HOME:-$HOME/.codex}/skills"
@@ -154,6 +193,36 @@ node tests/isolation-check.mjs
 
 `skills/capo/` 是可安装内容；`examples/` 与 `tests/` 是公开验证材料；`scripts/` 和 `.github/workflows/` 用于离线校验。运行产生的 `work/`、凭证和私人会话日志不属于发布内容。
 
+## 常见问题
+
+**安装后找不到 `$capo`？**
+
+确认复制的是 `skills/capo/` 这一层：宿主的技能目录下应直接存在 `capo/SKILL.md`，而不是多嵌套一层仓库目录。使用自定义 `CODEX_HOME` 时检查实际安装位置，然后打开新会话核对技能发现结果。
+
+**还需要安装 Node.js、配置新的 API Key 吗？**
+
+运行 Skill 直接使用当前 Codex 的模型和工具权限。Python 与 Node.js 是本项目离线开发验证的依赖。模型访问、额度和认证仍由你的 Codex 宿主及账户决定。
+
+**一定要有 Sol 或 Astra 吗？**
+
+它们是角色映射示例。Capo 应依据当前入口实际可用的模型选择配置，模型未知时如实记录。无法确认满足高级预算限制时，不启动该 Worker 轮次，可由 Router 执行允许的工作；涉及独立复核的必要项仍须取得独立证据才能通过。
+
+**关闭会话后，会自动在后台继续运行吗？**
+
+Capo 本身不启动后台服务。Worker 是否继续、是否可寻址，以及原生 goal 是否持续执行，都取决于宿主。重新进入时先读取运行记录，并核查暂停、Worker 和产物状态。
+
+**为什么没有 npm 安装命令？**
+
+目前交付的是 Codex Skill 文件，不是发布到 npm 的 CLI 包。使用上面的复制安装方式即可。
+
+## 反馈与贡献
+
+遇到问题可提交 [Bug 或功能建议](https://github.com/Yuteng-Chen/capo/issues/new)，已有讨论见 [Issues](https://github.com/Yuteng-Chen/capo/issues)。欢迎提交文档改进、可复现的行为场景和验证材料。
+
 提交改进时请附：可复现请求、宿主/版本、预期与实际行为、脱敏证据和验证范围。协议修改应补一个能暴露错误决策的场景；不要以匹配文档措辞的测试代替行为验证。
+
+## 设计来源与许可证
+
+调度设计参考了 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 和 [DSH Superagent Prototype](https://github.com/deepseek-ai/dsh-superagent-prototype)。Capo 是面向 Codex 原生子代理能力的独立 Skill；具体参考提交与适配范围见来源说明。
 
 本项目采用 [MIT License](LICENSE)。设计来源及上游边界见 [来源说明](THIRD_PARTY_NOTICES.md)。

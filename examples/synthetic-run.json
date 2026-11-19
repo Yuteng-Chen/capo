@@ -1,0 +1,138 @@
+{
+  "synthetic": true,
+  "release_version": "0.1.0",
+  "scenario": "Illustrative sequence of a requirement update and two independent reviews",
+  "artifact_digest_format": "sha256 of compact JSON with sorted object keys and ASCII escapes",
+  "artifacts": {
+    "ticket-fixture": [
+      {"id": "T-1", "status": "open"},
+      {"id": "T-2", "status": "closed"},
+      {"id": "T-3", "status": "open"}
+    ],
+    "summary-v1": {"total": 3},
+    "summary-v2": {"total": 3, "by_status": {"open": 2, "closed": 1, "in_progress": 0}}
+  },
+  "revisions": [
+    {
+      "task_id": "summarize-tickets",
+      "assignment_revision": 1,
+      "requirement_version": 1,
+      "context_revision": 1,
+      "worker_alias": "example-worker",
+      "user_request": "Count all supplied tickets and report the total.",
+      "criteria": {
+        "fixture": "The input contains the three supplied tickets with distinct IDs and recognized statuses.",
+        "summary": "The output contains the total ticket count."
+      },
+      "events": [
+        {"event": "assigned", "worker_alias": "example-worker"},
+        {
+          "event": "worker_report",
+          "worker_alias": "example-worker",
+          "status": "ready",
+          "artifacts": {"fixture": "ticket-fixture", "summary": "summary-v1"}
+        },
+        {
+          "event": "acceptance",
+          "evidence_id": "fixture-v1",
+          "task_id": "summarize-tickets",
+          "requirement_version": 1,
+          "context_revision": 1,
+          "assignment_revision": 1,
+          "criterion_id": "fixture",
+          "evidence_location": "#/artifacts/ticket-fixture",
+          "artifact_digest": "sha256:23f1d654bbdf8a5f2ceccd74e9fe2365062a86b8b73359a19f21b9d7d973bcf1",
+          "reviewer_alias": "example-router",
+          "result": "passed",
+          "method": "Independently inspect the original fixture.",
+          "observation": "The three IDs are distinct and all statuses are recognized."
+        },
+        {
+          "event": "acceptance",
+          "evidence_id": "summary-v1",
+          "task_id": "summarize-tickets",
+          "requirement_version": 1,
+          "context_revision": 1,
+          "assignment_revision": 1,
+          "criterion_id": "summary",
+          "evidence_location": "#/artifacts/summary-v1",
+          "artifact_digest": "sha256:9f827af5202050f264dfa05aeec4603d0fcec968de43ed7b039ce6a2d6231b08",
+          "reviewer_alias": "example-router",
+          "result": "passed",
+          "method": "Count records in the original fixture and compare the submitted total.",
+          "observation": "The fixture contains three tickets and the output reports a total of three."
+        }
+      ]
+    },
+    {
+      "task_id": "summarize-tickets",
+      "assignment_revision": 1,
+      "requirement_version": 2,
+      "context_revision": 2,
+      "worker_alias": "example-worker",
+      "user_request": "Keep the total and add counts for open, closed, and in-progress tickets. Show zero counts explicitly.",
+      "criteria": {
+        "fixture": "The input contains the three supplied tickets with distinct IDs and recognized statuses.",
+        "summary": "The output contains the total and all three per-status counts, including zero counts."
+      },
+      "events": [
+        {
+          "event": "requirement_updated",
+          "changed_criteria": ["summary"],
+          "invalidated_evidence": ["summary-v1"],
+          "context_change": "The output contract now requires the status breakdown. The source fixture and its criterion are unchanged."
+        },
+        {
+          "event": "message_sent",
+          "message_id": "example-update",
+          "worker_alias": "example-worker",
+          "observation": "In this scenario the host accepted a follow-up for the existing assignment."
+        },
+        {
+          "event": "message_ack",
+          "message_id": "example-update",
+          "worker_alias": "example-worker",
+          "observation": "The Worker acknowledged the new breakdown and the explicit zero count."
+        },
+        {
+          "event": "worker_report",
+          "worker_alias": "example-worker",
+          "status": "ready",
+          "artifacts": {"fixture": "ticket-fixture", "summary": "summary-v2"}
+        },
+        {
+          "event": "acceptance",
+          "evidence_id": "fixture-v2",
+          "task_id": "summarize-tickets",
+          "requirement_version": 2,
+          "context_revision": 2,
+          "assignment_revision": 1,
+          "criterion_id": "fixture",
+          "evidence_location": "#/artifacts/ticket-fixture",
+          "artifact_digest": "sha256:23f1d654bbdf8a5f2ceccd74e9fe2365062a86b8b73359a19f21b9d7d973bcf1",
+          "reviewer_alias": "example-router",
+          "result": "passed",
+          "carried_from": "fixture-v1",
+          "carry_reason": "The input criterion and its source facts are unchanged, and recomputing the current input digest matches the reviewed artifact exactly.",
+          "method": "Compare the frozen input criterion, its context facts, and the current artifact digest with the earlier review.",
+          "observation": "Both revisions use the same reviewed fixture."
+        },
+        {
+          "event": "acceptance",
+          "evidence_id": "summary-v2",
+          "task_id": "summarize-tickets",
+          "requirement_version": 2,
+          "context_revision": 2,
+          "assignment_revision": 1,
+          "criterion_id": "summary",
+          "evidence_location": "#/artifacts/summary-v2",
+          "artifact_digest": "sha256:6be9e5c6779f67a3bb89d500fcf2ae82076f79a73957b08caa41a494cce9a55d",
+          "reviewer_alias": "example-router",
+          "result": "passed",
+          "method": "Independently group the original tickets by status and compare every expected key and count.",
+          "observation": "The output reports open 2, closed 1, in_progress 0, and total 3."
+        }
+      ]
+    }
+  ]
+}

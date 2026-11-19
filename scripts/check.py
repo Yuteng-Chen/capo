@@ -1,4 +1,4 @@
-"""Check the text-only release and its one synthetic example without dependencies."""
+"""Check release text, the promotional PNG and synthetic evidence without dependencies."""
 
 import hashlib
 import json
@@ -66,10 +66,21 @@ def load_release_files():
             relative = path.relative_to(ROOT)
             check_privacy("/" + relative.as_posix(), "release path")
             if path.is_symlink():
-                raise CheckError(f"{relative}: symlinks are not part of this text-only release")
+                raise CheckError(f"{relative}: symlinks are not part of this release")
             if name in subdirs:
                 continue
             require(path.is_file(), f"{relative}: expected a regular file")
+            if relative == Path("assets/capo-banner.png"):
+                data = path.read_bytes()
+                require(len(data) >= 33 and len(data) <= 5 * 1024 * 1024,
+                        "banner: PNG must be between 33 bytes and 5 MiB")
+                require(data[:8] == b"\x89PNG\r\n\x1a\n" and data[12:16] == b"IHDR",
+                        "banner: expected a PNG image")
+                require(int.from_bytes(data[16:20], "big") > 0
+                        and int.from_bytes(data[20:24], "big") > 0,
+                        "banner: invalid dimensions")
+                files[relative] = ""
+                continue
             try:
                 files[relative] = path.read_text(encoding="utf-8")
             except (OSError, UnicodeError):
